@@ -1,3 +1,7 @@
 [submodule "cliente"] 
   path = cliente 
   url = https://github.com/chicofreitas/nextjs-docker.git
+
+[submodule "doca"]
+  path = doca
+  url = https://github.com/chicofreitas/django-docker-gunicorn-deploy.git
