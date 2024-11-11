@@ -1,0 +1,42 @@
+services:
+  web:
+    container_name: doca
+    build: 
+      context: ./doca
+      dockerfile: Dockerfile.prod
+    command: gunicorn soucer.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./doca:/home/app/web
+      - staticfiles:/home/app/web/staticfiles
+    expose:
+      - 8000
+    env_file:
+      - ./.env.prod
+  cliente:
+    image: node:22
+    container_name: "cliente"
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    expose:
+      - 3000
+    volumes:
+      - ./cliente:/app      
+      - /app/node_modules
+    environment:
+#      - NODE_ENV=production
+      - NODE_ENV=development
+#    command: bash -c "npm install --include=dev && npm run build && npm run start"
+    command: bash -c "npm install && npm run dev"
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    volumes:
+      - staticfiles:/home/app/web/staticfiles
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+      - cliente
+volumes:
+  staticfiles:
